@@ -29,11 +29,14 @@ winning_candidate = ""
 winning_count = 0
 # Variable for Winning Percentage
 winning_percentage = 0
+
+
+
 with open(file_to_load) as election_data:
     #To Do: read and analyze the data here.
     file_reader = csv.reader(election_data)
     
-    #Print header row
+    #Skip header row
     headers = next(file_reader)
     
     # Iterate through each row in the CSV file
@@ -51,26 +54,44 @@ with open(file_to_load) as election_data:
 
         candidate_votes[candidate_name] += 1
 
-for candidate in candidate_votes:
-    votes = candidate_votes[candidate]
-    # Creating variable for percentage of votes awarded
-    vote_percentage = (int(votes) / int(total_votes)) * 100
+# Writing the results to our text file.
+with open(file_to_save, "w") as txt_file:
 
-    print(f"{candidate}: {vote_percentage:.1f}% ({votes})\n")
+    for candidate in candidate_votes:
+        votes = candidate_votes[candidate]
+        # Creating variable for percentage of votes awarded
+        vote_percentage = (int(votes) / int(total_votes)) * 100
 
-    if (votes > winning_count) and (vote_percentage > winning_percentage):
-        winning_count = votes
-        winning_percentage = vote_percentage
+        #print(f"{candidate}: {vote_percentage:.1f}% ({votes})\n")
 
-        winning_candidate = candidate
+        if (votes > winning_count) and (vote_percentage > winning_percentage):
+            winning_count = votes
+            winning_percentage = vote_percentage
 
-winning_candidate_summary = (
-    f"--------------------------------\n"
-    f"Winner: {winning_candidate}\n"
-    f"Winning Vote Count: {winning_count}\n"
-    f"WInning Percentage: {winning_percentage:.1f}%\n"
-    f"--------------------------------\n")
-print(winning_candidate_summary)
+            winning_candidate = candidate
+
+    winning_candidate_summary = (
+        f"--------------------------------\n"
+        f"Winner: {winning_candidate}\n"
+        f"Winning Vote Count: {winning_count}\n"
+        f"WInning Percentage: {winning_percentage:.1f}%\n"
+        f"--------------------------------\n")
+    #print(winning_candidate_summary)
+
+    election_results = (
+        f"\nElection Results\n"
+        f"------------------------\n"
+        f"Total Votes: {total_votes:,}\n"
+        f"------------------------\n")
+    print(election_results, end="")
+    # Save the final vote count to the text file.
+    txt_file.write(election_results)
+   
+    # Candidate results variable
+    candidate_results = f"{candidate}: {vote_percentage:.1f}% ({votes})\n"
+    
+    print(candidate_results)
+    txt_file.write(candidate_results)
 
 # Using the open() function with the "w" mode we will write data to the file
 #with open(file_to_save, "w") as txt_file:
